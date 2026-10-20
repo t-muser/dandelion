@@ -1,0 +1,42 @@
+[project]
+name = "dandelion"
+version = "0.1.0"
+description = "Dandelion: warp-based neural PDE solvers on the sphere, with training code for the spherical PDE benchmark."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "torch>=2.6.0",
+    "torch-harmonics>=0.9.0",
+    "einops>=0.8.2",
+    "numpy>=1.22.4",
+    "scipy>=1.16.1",
+    "hydra-core>=1.3.2",
+    "omegaconf>=2.3.0",
+    "h5py",
+    "hdf5plugin",
+    "pyyaml",
+    "the-well>=1.1.0",
+    "huggingface-hub",
+    "wandb>=0.18",
+]
+
+[project.optional-dependencies]
+# Local-R transformer (natten) and GAOT (rotary-embedding-torch). GAOT also
+# needs torch-scatter (see README) and `bash scripts/fetch_gaot.sh`.
+baselines = [
+    "natten>=0.21.6",
+    "rotary-embedding-torch",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["dandelion"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]

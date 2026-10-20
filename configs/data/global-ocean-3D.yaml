@@ -1,0 +1,103 @@
+# Global ocean 3D: MITgcm global_ocean.cs32x15. The HDF5 files hold the native
+# cs32 cubed sphere; each window is regridded on the fly to a 64x128 equiangular
+# grid (u/v rotation to east/north, IDW k=4, land imputation, levels folded into
+# channels). Static geometry is read from <path>/grid.h5.
+#
+# Channels: 6 of the 15 levels, 4 fields x 6 levels + eta = 25 dynamic;
+# + depth + sin/cos(day of year) = 28 input channels.
+# Data: https://huggingface.co/datasets/sada-group/global-ocean-3D
+#   uv run scripts/download_data.py global-ocean-3D
+data:
+  _target_: dandelion.data.ocean_latlon.GlobalOcean3DLatLonHDF5DataModule
+  root: ${oc.env:DANDELION_DATA,./data}/global-ocean-3D
+  dataset_name: global-ocean-3D
+  # Wet-cell-masked per-channel stats keyed by channel name (theta_k01 ... eta)
+  # for the `levels` below. Not the HF stats.yaml (per-level, land included).
+  stats:
+    theta_k01:
+      mean: 18.038614
+      std: 9.539703
+    theta_k03:
+      mean: 13.048249
+      std: 6.205151
+    theta_k05:
+      mean: 9.008707
+      std: 3.930564
+    theta_k07:
+      mean: 5.363595
+      std: 2.362775
+    theta_k10:
+      mean: 2.58065
+      std: 1.384416
+    theta_k13:
+      mean: 1.256062
+      std: 0.64118
+    salt_k01:
+      mean: 34.699642
+      std: 1.514683
+    salt_k03:
+      mean: 34.987295
+      std: 1.093118
+    salt_k05:
+      mean: 34.850464
+      std: 0.865428
+    salt_k07:
+      mean: 34.720408
+      std: 0.751602
+    salt_k10:
+      mean: 34.798233
+      std: 0.486817
+    salt_k13:
+      mean: 34.748783
+      std: 0.132442
+    u_k01:
+      mean: -0.00346
+      std: 0.046307
+    u_k03:
+      mean: -0.001435
+      std: 0.028025
+    u_k05:
+      mean: -0.001749
+      std: 0.018998
+    u_k07:
+      mean: -0.000546
+      std: 0.010122
+    u_k10:
+      mean: 0.00039
+      std: 0.004554
+    u_k13:
+      mean: -9.4e-05
+      std: 0.002317
+    v_k01:
+      mean: -0.005591
+      std: 0.051064
+    v_k03:
+      mean: 0.00063
+      std: 0.03241
+    v_k05:
+      mean: -0.001466
+      std: 0.019015
+    v_k07:
+      mean: -0.000592
+      std: 0.00953
+    v_k10:
+      mean: -0.000127
+      std: 0.004166
+    v_k13:
+      mean: -0.000115
+      std: 0.002374
+    eta:
+      mean: 0.011755
+      std: 0.574839
+  levels: [1, 3, 5, 7, 10, 13]
+  dim_in: 28
+  dim_out: 25
+  spatial_resolution: [64, 128]
+  grid: equiangular
+  regrid_method: idw
+  regrid_k: 4
+  impute_land: true
+  batch_size: 2
+  n_steps_input: 4
+  n_steps_output: 1
+  num_workers: 16

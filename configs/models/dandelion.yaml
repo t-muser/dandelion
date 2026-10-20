@@ -1,0 +1,12 @@
+# Dandelion: warp-based U-Net on the sphere. Tangent-plane warp blocks
+# (great-circle transport) and spherical-harmonic 2x down/up sampling on an
+# equiangular grid.
+model:
+  _target_: dandelion.models.dandelion.Dandelion
+  lifting_dim: 150
+  n_levels: 4
+  channel_multipliers: [1, 2, 4, 8]
+  num_heads: 50
+  groups: 50
+  dropout_rate: 0.0
+  coord_dim: 3

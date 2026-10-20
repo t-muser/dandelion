@@ -1,0 +1,71 @@
+# Barotropic jets: rotating shallow water (Galewsky-type jets), six SO(3) tilts
+# per physics configuration; the split is grouped by configuration so all six
+# tilts of a configuration fall on the same side. 256x512 equiangular grid,
+# 3 channels: h + velocity [u_phi, u_theta].
+# Data: https://huggingface.co/datasets/sada-group/barotropic-jets
+#   uv run scripts/download_data.py barotropic-jets
+data:
+  _target_: dandelion.data.datamodule.NotWellDataModule
+  path: ${oc.env:DANDELION_DATA,./data}/barotropic-jets
+  dataset_name: barotropic-jets
+
+  train_dataset:
+    _target_: dandelion.data.spherical_hdf5.SphericalHDF5Dataset
+    _partial_: true
+  eval_dataset:
+    _target_: dandelion.data.spherical_hdf5.SphericalHDF5Dataset
+    _partial_: true
+
+  batch_size: 2
+  data_workers: 8
+  n_steps_input: 1
+  n_steps_output: 1
+  min_dt_stride: 1
+  max_dt_stride: 1
+
+  use_normalization: true
+  include_filters: []
+  exclude_filters: []
+  boundary_return_type: null  # closed sphere: no boundary conditions
+  meta_scalars: []
+
+  # Z-score stats, identical to the dataset's stats.yaml on HuggingFace. The
+  # Well's normalizer needs an entry for every per-trajectory constant scalar
+  # (the h5 `scalars/` group) or it disables normalization.
+  stats:
+    h:
+      mean: -53.780542
+      std: 533.844692
+      rms: 536.546831
+      mean_delta: -0.063344
+      std_delta: 16.441134
+    velocity:
+      mean: [3.184479, 0.000422]
+      std: [18.161306, 16.130466]
+      rms: [18.438383, 16.130466]
+      mean_delta: [0.000683, 0.000002]
+      std_delta: [1.616473, 1.672917]
+    u_max:
+      mean: 80.625
+      std: 13.735788
+      rms: 81.786689
+      mean_delta: 0.0
+      std_delta: 0.0
+    lat_center:
+      mean: 45.625
+      std: 11.439378
+      rms: 47.037219
+      mean_delta: 0.0
+      std_delta: 0.0
+    h_hat:
+      mean: 145.78125
+      std: 89.901069
+      rms: 171.272809
+      mean_delta: 0.0
+      std_delta: 0.0
+    H:
+      mean: 10984.375
+      std: 2236.013385
+      rms: 11209.649861
+      mean_delta: 0.0
+      std_delta: 0.0

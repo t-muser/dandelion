@@ -1,0 +1,14 @@
+# FNO: SFNO with the spherical harmonic transforms swapped for 2D FFTs on the
+# periodic domain. Same hyperparameters as sfno.yaml.
+model:
+  _target_: dandelion.models.baselines.sphere_models.Fno
+  embed_dim: 192
+  num_layers: 4
+  scale_factor: 2
+  mlp_ratio: 2.0
+  hard_thresholding_fraction: 0.5
+  use_mlp: true
+  normalization_layer: instance_norm
+  residual_prediction: false
+  pos_embed: none
+  activation_function: gelu

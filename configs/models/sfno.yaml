@@ -1,0 +1,14 @@
+# SFNO (Bonev et al., "Spherical Fourier Neural Operators", ICML 2023), from
+# torch_harmonics.examples.models.
+model:
+  _target_: dandelion.models.baselines.sphere_models.Sfno
+  embed_dim: 192
+  num_layers: 4
+  scale_factor: 2
+  mlp_ratio: 2.0
+  hard_thresholding_fraction: 0.5
+  use_mlp: true
+  normalization_layer: instance_norm
+  residual_prediction: false
+  pos_embed: none
+  activation_function: gelu

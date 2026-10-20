@@ -1,0 +1,20 @@
+# Dandelion2.5D specifically for configs/data/global-ocean-3D.yaml.
+
+# Same model as dandelion2p5d.yaml; the folded layout per time step is
+# [theta x 6 levels, salt x 6, u x 6, v x 6, eta], followed on the input by
+# forcing channels (depth, sin/cos day of year). 
+
+# level_schedule gives the vertical U-net structure. null results in
+# 7 -> 4 -> 2 -> 1 for ocean.
+model:
+  _target_: dandelion.models.dandelion2p5d.Dandelion2p5D
+  level_layout: [6, 6, 6, 6, 1]
+  n_forcing: 3
+  level_schedule: null
+  lifting_dim: 70
+  n_levels: 4
+  channel_multipliers: [1, 2, 4, 8]
+  num_heads: 35
+  groups: 35
+  dropout_rate: 0.0
+  coord_dim: 3

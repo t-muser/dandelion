@@ -1,0 +1,18 @@
+# Local-R transformer (Bonev et al., "Attention on the Sphere", arXiv 2505.11157):
+# planar neighborhood attention (NATTEN) on the lat/lon grid, ~530K-parameter size
+model:
+  _target_: dandelion.models.baselines.sphere_models.LocalRTransformer
+  embed_dim: 128
+  num_layers: 4
+  scale_factor: 2
+  mlp_ratio: 2.0
+  use_mlp: true
+  encoder_kernel_shape: [3, 3]
+  attn_kernel_shape: [7, 7]
+  normalization_layer: instance_norm
+  pos_embed: spectral
+  upsampling_method: conv
+  residual_prediction: false
+  bias: false
+  activation_function: gelu
+  attention_mode: neighborhood

@@ -1,0 +1,81 @@
+# Active turbulence: active-matter vorticity on the sphere, snapshots every
+# 0.2 tau. 128x256 equiangular grid, 1 channel (vorticity).
+# Data: https://huggingface.co/datasets/sada-group/active-turbulence
+#   uv run scripts/download_data.py active-turbulence
+data:
+  _target_: dandelion.data.datamodule.NotWellDataModule
+  path: ${oc.env:DANDELION_DATA,./data}/active-turbulence
+  dataset_name: active-turbulence
+
+  train_dataset:
+    _target_: dandelion.data.spherical_hdf5.SphericalHDF5Dataset
+    _partial_: true
+  eval_dataset:
+    _target_: dandelion.data.spherical_hdf5.SphericalHDF5Dataset
+    _partial_: true
+
+  batch_size: 2
+  data_workers: 8
+  n_steps_input: 1
+  n_steps_output: 1
+  min_dt_stride: 1
+  max_dt_stride: 1
+
+  use_normalization: true
+  include_filters: []
+  exclude_filters: []
+  boundary_return_type: null  # closed sphere: no boundary conditions
+  meta_scalars: []
+
+  # Z-score stats, identical to the dataset's stats.yaml on HuggingFace. The
+  # Well's normalizer needs an entry for every per-trajectory constant scalar
+  # (the h5 `scalars/` group) or it disables normalization.
+  stats:
+    vorticity:
+      mean: 0.019225
+      std: 15.259768
+      rms: 15.25978
+      mean_delta: 1.1e-05
+      std_delta: 9.538622
+    R:
+      mean: 1.0
+      std: 0.0
+      rms: 1.0
+      mean_delta: 0.0
+      std_delta: 0.0
+    tau:
+      mean: 1.0
+      std: 0.0
+      rms: 1.0
+      mean_delta: 0.0
+      std_delta: 0.0
+    Lambda:
+      mean: 0.234962
+      std: 0.147898
+      rms: 0.277635
+      mean_delta: 0.0
+      std_delta: 0.0
+    kappa:
+      mean: 6.373684
+      std: 4.502379
+      rms: 7.803542
+      mean_delta: 0.0
+      std_delta: 0.0
+    seed:
+      mean: 19.465461
+      std: 11.535363
+      rms: 22.626726
+      mean_delta: 0.0
+      std_delta: 0.0
+    r_over_lambda:
+      mean: 5.947368
+      std: 2.98194
+      rms: 6.653056
+      mean_delta: 0.0
+      std_delta: 0.0
+    kappa_lambda:
+      mean: 1.094737
+      std: 0.485011
+      rms: 1.197366
+      mean_delta: 0.0
+      std_delta: 0.0

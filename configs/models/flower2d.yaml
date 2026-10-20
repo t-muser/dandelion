@@ -1,0 +1,12 @@
+# Flower2D, the Euclidean Flower U-Net
+
+# Zero boundary along latitude (poles are not periodic),
+# periodic along longitude.
+model:
+  _target_: dandelion.models.flower.Flower2D
+  lifting_dim: 160
+  n_levels: 4
+  num_heads: 40
+  groups: 40
+  dropout_rate: 0.0
+  boundary_condition_types: ["ZEROS", "PERIODIC"]

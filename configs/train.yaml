@@ -1,0 +1,57 @@
+# Training recipe from the paper: 4 input frames -> 1 predicted frame.
+# 20 epochs of single-step training, then 5 epochs unrolling 2 autoregressive
+# steps (the loader returns 2 ground-truth output frames; single-step training
+# only uses the first). Validation and test roll out 20 steps.
+name: paper
+experiment_dir: runs
+auto_resume: false
+test_mode: false
+folder_override: ""
+checkpoint_override: ""
+config_override: ""
+
+wandb:
+  enabled: false
+  mode: online
+  project: dandelion
+  entity: null
+  group: null
+  tags: []
+
+# Overrides applied on top of the data config. (Worker counts live in each
+# data config.)
+data:
+  n_steps_input: 4
+  n_steps_output: 2
+  max_rollout_steps: 20
+
+# Size the model output for one predicted frame regardless of how many GT
+# frames the loader returns; the AR phase rolls the model forward in code.
+model_predict_steps: 1
+
+optimizer:
+  _target_: torch.optim.AdamW
+  lr: 5.0e-4  # paper: swept over {1e-4, 5e-4, 1e-3}
+  weight_decay: 1.0e-4
+
+lr_scheduler:
+  _target_: dandelion.utils.build_warmup_cosine
+  warmup_epochs: 1
+  T_max: 25  # total epochs (epochs + ar_epochs)
+  eta_min: 1.0e-5
+
+loss:
+  _target_: dandelion.metrics.LatitudeWeightedMSELoss
+  # nlat / grid filled in by dandelion.train from datamodule.metadata.
+
+trainer:
+  _target_: dandelion.trainer.Trainer
+  epochs: 20
+  ar_epochs: 5
+  ar_steps: 2
+  checkpoint_frequency: 1
+  val_frequency: 1
+  rollout_val_frequency: 1
+  max_rollout_steps: 20
+  grad_clip: 1.0
+  checkpoint_path: ""

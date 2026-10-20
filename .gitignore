@@ -1,0 +1,16 @@
+__pycache__/
+*.py[oc]
+build/
+dist/
+*.egg-info
+.venv
+
+# Datasets, runs, logs
+/data/
+runs/
+slurm/
+wandb/
+
+# Locally fetched / built third-party code
+third_party/
+dandelion/models/baselines/gaot/_upstream/

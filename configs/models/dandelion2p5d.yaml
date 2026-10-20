@@ -1,0 +1,27 @@
+# Dandelion2.5D: Dandelion on the stacked vertical levels of a 3-D dataset.
+# Per-level tangent warps plus a dense mix over all (channel, level) pairs;
+# the surface is the bottom slice of the volume.
+
+# level_schedule gives the vertical U-net structure.
+# (e.g. [9, 9, 9, 9] would keep all levels at every stage).
+# null = halve per stage, here 9 -> 5 -> 3 -> 2
+
+# Takes the level-folded input of configs/data/dry-atmosphere-3D.yaml;
+# `level_layout` gives the vertical structure of the quantity. Valid entries
+# are either a number N or 1. E.g. for dry-atmosphere-3D, N=8 and we have
+# [8, 1, 8, 8]. Any channel given as `1` is assumed to be a surface channel
+# and will be placed below the innermost shell. This is not relevant for the
+# dense mixing we use, but if you adapt this code, it could be relevant.
+# E.g. for ocean, the surface quantities are technically placed after the deepest
+# layer.
+model:
+  _target_: dandelion.models.dandelion2p5d.Dandelion2p5D
+  level_layout: [8, 1, 8, 8]
+  level_schedule: null
+  lifting_dim: 70
+  n_levels: 4
+  channel_multipliers: [1, 2, 4, 8]
+  num_heads: 35
+  groups: 35
+  dropout_rate: 0.0
+  coord_dim: 3

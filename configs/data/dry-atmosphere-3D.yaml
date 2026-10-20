@@ -1,0 +1,199 @@
+# Dry atmosphere 3D: Held-Suarez dry GCM (ClimaAtmos). Spatial grid is
+# (level=8, lat=144, lon=288); fold_levels_into_channels collapses levels into
+# channels, field-major: [T_lev0..7, ps, u_lev0..7, v_lev0..7] = 25 channels.
+# T and velocity stats are per level.
+# Data: https://huggingface.co/datasets/sada-group/dry-atmosphere-3D
+#   uv run scripts/download_data.py dry-atmosphere-3D
+data:
+  _target_: dandelion.data.datamodule.NotWellDataModule
+  path: ${oc.env:DANDELION_DATA,./data}/dry-atmosphere-3D
+  dataset_name: dry-atmosphere-3D
+
+  train_dataset:
+    _target_: dandelion.data.spherical_hdf5.SphericalHDF5Dataset
+    _partial_: true
+    fold_levels_into_channels: true
+  eval_dataset:
+    _target_: dandelion.data.spherical_hdf5.SphericalHDF5Dataset
+    _partial_: true
+    fold_levels_into_channels: true
+
+  batch_size: 2
+  data_workers: 16
+  n_steps_input: 1
+  n_steps_output: 1
+  min_dt_stride: 1
+  max_dt_stride: 1
+
+  use_normalization: true
+  include_filters: []
+  exclude_filters: []
+  boundary_return_type: null  # closed sphere: no boundary conditions
+  meta_scalars: []
+
+  # Z-score stats, identical to the dataset's stats.yaml on HuggingFace. The
+  # Well's normalizer needs an entry for every per-trajectory constant scalar
+  # (the h5 `scalars/` group) or it disables normalization.
+  stats:
+    T:
+      mean:
+      - 201.027342
+      - 202.144028
+      - 215.30994
+      - 247.846186
+      - 267.965178
+      - 278.812129
+      - 282.3563
+      - 282.749642
+      std:
+      - 6.705256
+      - 7.738064
+      - 3.776323
+      - 10.655489
+      - 13.551601
+      - 15.439949
+      - 16.128758
+      - 16.450789
+      rms:
+      - 201.139137
+      - 202.29208
+      - 215.343054
+      - 248.075132
+      - 268.307627
+      - 279.239316
+      - 282.816579
+      - 283.227803
+      mean_delta:
+      - -0.000506
+      - -0.000363
+      - -0.000105
+      - -3.4e-05
+      - -4.3e-05
+      - -5.1e-05
+      - -3.6e-05
+      - 3.8e-05
+      std_delta:
+      - 0.287642
+      - 0.376987
+      - 0.459252
+      - 0.636636
+      - 0.797441
+      - 0.824987
+      - 0.820235
+      - 0.95833
+    ps:
+      mean: 100044.747756
+      std: 993.98922
+      rms: 100049.685498
+      mean_delta: -0.00388
+      std_delta: 146.920601
+    velocity:
+      mean:
+      - - 0.893571
+        - 0.000116
+      - - 4.861114
+        - -7.3e-05
+      - - 9.59034
+        - 0.000412
+      - - 6.892978
+        - 0.000851
+      - - 4.094062
+        - 4.7e-05
+      - - 1.819422
+        - -0.000439
+      - - 0.605712
+        - -0.00088
+      - - -0.739424
+        - -0.001065
+      std:
+      - - 7.888752
+        - 3.702707
+      - - 10.115845
+        - 5.589699
+      - - 14.254072
+        - 10.159503
+      - - 11.262434
+        - 8.468581
+      - - 7.963444
+        - 5.857821
+      - - 6.352025
+        - 4.834348
+      - - 6.190704
+        - 4.810916
+      - - 6.658586
+        - 5.291798
+      rms:
+      - - 7.939198
+        - 3.702707
+      - - 11.223223
+        - 5.589699
+      - - 17.180023
+        - 10.159503
+      - - 13.204377
+        - 8.468581
+      - - 8.954205
+        - 5.857821
+      - - 6.607459
+        - 4.834348
+      - - 6.220266
+        - 4.810916
+      - - 6.699516
+        - 5.291798
+      mean_delta:
+      - - -0.000516
+        - 2.0e-06
+      - - -8.9e-05
+        - -1.0e-06
+      - - 0.00016
+        - -1.1e-05
+      - - 0.00011
+        - -1.1e-05
+      - - 8.2e-05
+        - -1.0e-05
+      - - 5.8e-05
+        - -2.0e-06
+      - - 4.6e-05
+        - 2.0e-06
+      - - 4.1e-05
+        - 2.0e-06
+      std_delta:
+      - - 0.640613
+        - 0.730069
+      - - 0.936693
+        - 1.191067
+      - - 2.258839
+        - 3.002162
+      - - 2.156818
+        - 2.884003
+      - - 1.45604
+        - 1.871997
+      - - 1.337507
+        - 1.621075
+      - - 1.462396
+        - 1.73444
+      - - 1.714038
+        - 2.026374
+    omega_factor:
+      mean: 1.192308
+      std: 0.61201
+      rms: 1.340207
+      mean_delta: 0.0
+      std_delta: 0.0
+    delta_T_y:
+      mean: 60.0
+      std: 16.455067
+      rms: 62.215506
+      mean_delta: 0.0
+      std_delta: 0.0
+    delta_theta_z:
+      mean: 11.5
+      std: 6.128433
+      rms: 13.031028
+      mean_delta: 0.0
+      std_delta: 0.0
+    seed:
+      mean: 2.469231
+      std: 1.655706
+      rms: 2.972955
+      mean_delta: 0.0
+      std_delta: 0.0

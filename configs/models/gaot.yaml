@@ -1,0 +1,19 @@
+# GAOT (Geometry-Aware Operator Transformer, camlab-ethz/GAOT).
+
+# Hyperparameters adapted from upstream's
+# config/examples/time_dep/ns_gauss.json
+model:
+  _target_: dandelion.models.baselines.gaot.GAOTWrapper
+  latent_tokens_size: [64, 64]     # model.latent_tokens_size
+  patch_size: 2                    # model.args.transformer.patch_size
+  hidden_size: 256                 # model.args.transformer.hidden_size
+  num_layers: 3                    # TransformerConfig default (absent from JSON)
+  positional_embedding: absolute   # TransformerConfig default
+  grid: equiangular                # lat-node convention for xcoord (set per-dataset if legendre-gauss)
+  magno:
+    coord_dim: 2                   # model.args.magno.coord_dim (sphere as a plane)
+    radius: 0.033                  # model.args.magno.radius (same 64x64 [-1,1] latent grid -> same stencil as upstream)
+    hidden_size: 64                # model.args.magno.hidden_size
+    mlp_layers: 3                  # model.args.magno.mlp_layers
+    lifting_channels: 64           # model.args.magno.lifting_channels
+    neighbor_search_method: native # pure-torch backend (no torch_cluster/open3d needed).

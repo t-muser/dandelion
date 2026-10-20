@@ -1,0 +1,67 @@
+# Shock caps: hyperbolic shallow water with shocks on the sphere. 256x512
+# equiangular grid, 3 channels: height + momentum [momentum_u, momentum_v].
+# Data: https://huggingface.co/datasets/sada-group/shock-caps
+#   uv run scripts/download_data.py shock-caps
+data:
+  _target_: dandelion.data.datamodule.NotWellDataModule
+  path: ${oc.env:DANDELION_DATA,./data}/shock-caps
+  dataset_name: shock-caps
+
+  train_dataset:
+    _target_: dandelion.data.spherical_hdf5.SphericalHDF5Dataset
+    _partial_: true
+  eval_dataset:
+    _target_: dandelion.data.spherical_hdf5.SphericalHDF5Dataset
+    _partial_: true
+
+  batch_size: 2
+  data_workers: 8
+  n_steps_input: 1
+  n_steps_output: 1
+  min_dt_stride: 1
+  max_dt_stride: 1
+
+  use_normalization: true
+  include_filters: []
+  exclude_filters: []
+  boundary_return_type: null  # closed sphere: no boundary conditions
+  meta_scalars: []
+
+  # Z-score stats, identical to the dataset's stats.yaml on HuggingFace. The
+  # Well's normalizer needs an entry for every per-trajectory constant scalar
+  # (the h5 `scalars/` group) or it disables normalization.
+  stats:
+    height:
+      mean: 1.3206
+      std: 0.331494
+      rms: 1.36157
+      log_mean: .nan
+      log_std: .nan
+      mean_delta: -6.7e-05
+      std_delta: 0.057143
+    momentum:
+      mean: [0.011379, 0.001716]
+      std: [0.571083, 0.503895]
+      rms: [0.571197, 0.503898]
+      log_mean: [.nan, .nan]
+      log_std: [.nan, .nan]
+      mean_delta: [-0.000241, 0.000159]
+      std_delta: [0.171645, 0.175489]
+    seed:
+      mean: 9.4475
+      std: 5.766909
+      rms: 11.068536
+      mean_delta: 0.0
+      std_delta: 0.0
+    delta:
+      mean: 0.5
+      std: 0.353553
+      rms: 0.612372
+      mean_delta: 0.0
+      std_delta: 0.0
+    K:
+      mean: 6.2
+      std: 5.455273
+      rms: 8.258329
+      mean_delta: 0.0
+      std_delta: 0.0

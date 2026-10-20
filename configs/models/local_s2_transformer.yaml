@@ -1,0 +1,18 @@
+# Local-S2 transformer (Bonev et al., "Attention on the Sphere", arXiv 2505.11157):
+# neighborhood attention on the sphere, ~530K-parameter size
+model:
+  _target_: dandelion.models.baselines.sphere_models.LocalS2Transformer
+  embed_dim: 128
+  num_layers: 4
+  scale_factor: 2
+  mlp_ratio: 2.0
+  use_mlp: true
+  encoder_kernel_shape: [5, 4]
+  filter_basis_type: piecewise linear
+  normalization_layer: instance_norm
+  pos_embed: spectral
+  upsample_sht: false
+  residual_prediction: false
+  bias: false
+  activation_function: gelu
+  attention_mode: neighborhood
